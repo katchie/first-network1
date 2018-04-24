@@ -1,0 +1,114 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '2'
+
+services:
+
+  orderer.zonenet:
+    container_name: orderer.zonenet
+    image: hyperledger/fabric-orderer:$IMAGE_TAG
+    environment:
+      - ORDERER_GENERAL_LOGLEVEL=INFO
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block
+      - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+      # enabled TLS
+      - ORDERER_GENERAL_TLS_ENABLED=true
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: orderer
+    volumes:
+    - ../channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+    - ../crypto-config/ordererOrganizations/zonenet/orderers/orderer.zonenet/msp:/var/hyperledger/orderer/msp
+    - ../crypto-config/ordererOrganizations/zonenet/orderers/orderer.zonenet/tls/:/var/hyperledger/orderer/tls
+    - orderer.zonenet:/var/hyperledger/production/orderer
+    ports:
+      - 7050:7050
+
+  peer0.gtb.zonenet:
+    container_name: peer0.gtb.zonenet
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.gtb.zonenet
+      - CORE_PEER_ADDRESS=peer0.gtb.zonenet:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.gtb.zonenet:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.gtb.zonenet:7051
+      - CORE_PEER_LOCALMSPID=gtbMSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/gtb.zonenet/peers/peer0.gtb.zonenet/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/gtb.zonenet/peers/peer0.gtb.zonenet/tls:/etc/hyperledger/fabric/tls
+        - peer0.gtb.zonenet:/var/hyperledger/production
+    ports:
+      - 7051:7051
+      - 7053:7053
+
+  peer1.gtb.zonenet:
+    container_name: peer1.gtb.zonenet
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer1.gtb.zonenet
+      - CORE_PEER_ADDRESS=peer1.gtb.zonenet:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.gtb.zonenet:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.gtb.zonenet:7051
+      - CORE_PEER_LOCALMSPID=gtbMSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/gtb.zonenet/peers/peer1.gtb.zonenet/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/gtb.zonenet/peers/peer1.gtb.zonenet/tls:/etc/hyperledger/fabric/tls
+        - peer1.gtb.zonenet:/var/hyperledger/production
+
+    ports:
+      - 8051:7051
+      - 8053:7053
+
+  peer0.uba.zonenet:
+    container_name: peer0.uba.zonenet
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.uba.zonenet
+      - CORE_PEER_ADDRESS=peer0.uba.zonenet:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.uba.zonenet:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.uba.zonenet:7051
+      - CORE_PEER_LOCALMSPID=ubaMSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/uba.zonenet/peers/peer0.uba.zonenet/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/uba.zonenet/peers/peer0.uba.zonenet/tls:/etc/hyperledger/fabric/tls
+        - peer0.uba.zonenet:/var/hyperledger/production
+    ports:
+      - 9051:7051
+      - 9053:7053
+
+  peer1.uba.zonenet:
+    container_name: peer1.uba.zonenet
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer1.uba.zonenet
+      - CORE_PEER_ADDRESS=peer1.uba.zonenet:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.uba.zonenet:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.uba.zonenet:7051
+      - CORE_PEER_LOCALMSPID=ubaMSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/uba.zonenet/peers/peer1.uba.zonenet/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/uba.zonenet/peers/peer1.uba.zonenet/tls:/etc/hyperledger/fabric/tls
+        - peer1.uba.zonenet:/var/hyperledger/production
+    ports:
+      - 10051:7051
+      - 10053:7053

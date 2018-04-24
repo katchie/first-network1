@@ -1,0 +1,125 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '2'
+
+volumes:
+  orderer.zonenet:
+  peer0.gtb.zonenet:
+  peer1.gtb.zonenet:
+  peer0.uba.zonenet:
+  peer1.uba.zonenet:
+
+networks:
+  byfn:
+services:
+  ca0:
+    image: hyperledger/fabric-ca:$IMAGE_TAG
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca-gtb
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.gtb.zonenet-cert.pem
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/f4c8db8f863b7148008c0fe308dace2afd459f2baea33043614b5bf97c561fb8_sk
+    ports:
+      - "7054:7054"
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.gtb.zonenet-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/f4c8db8f863b7148008c0fe308dace2afd459f2baea33043614b5bf97c561fb8_sk -b admin:adminpw -d'
+    volumes:
+      - ./crypto-config/peerOrganizations/gtb.zonenet/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca_peergtb
+    networks:
+      - byfn
+
+  ca1:
+    image: hyperledger/fabric-ca:$IMAGE_TAG
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca-uba
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.uba.zonenet-cert.pem
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/79d2d5af6582fb3dba137db61f9796b8f28c80b1e5cff9d7c33c72f170a477f8_sk
+    ports:
+      - "8054:7054"
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.uba.zonenet-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/79d2d5af6582fb3dba137db61f9796b8f28c80b1e5cff9d7c33c72f170a477f8_sk -b admin:adminpw -d'
+    volumes:
+      - ./crypto-config/peerOrganizations/uba.zonenet/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca_peeruba
+    networks:
+      - byfn
+
+  orderer.zonenet:
+    extends:
+      file:   base/docker-compose-base.yaml
+      service: orderer.zonenet
+    container_name: orderer.zonenet
+    networks:
+      - byfn
+
+  peer0.gtb.zonenet:
+    container_name: peer0.gtb.zonenet
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer0.gtb.zonenet
+    networks:
+      - byfn
+
+  peer1.gtb.zonenet:
+    container_name: peer1.gtb.zonenet
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer1.gtb.zonenet
+    networks:
+      - byfn
+
+  peer0.uba.zonenet:
+    container_name: peer0.uba.zonenet
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer0.uba.zonenet
+    networks:
+      - byfn
+
+  peer1.uba.zonenet:
+    container_name: peer1.uba.zonenet
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer1.uba.zonenet
+    networks:
+      - byfn
+  cli:
+     container_name: cli
+     image: hyperledger/fabric-tools:$IMAGE_TAG
+     tty: true
+     stdin_open: true
+     environment:
+       - GOPATH=/opt/gopath
+       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+       #- CORE_LOGGING_LEVEL=DEBUG
+       - CORE_LOGGING_LEVEL=INFO
+       - CORE_PEER_ID=cli
+       - CORE_PEER_ADDRESS=peer0.gtb.zonenet:7051
+       - CORE_PEER_LOCALMSPID=gtbMSP
+       - CORE_PEER_TLS_ENABLED=true
+       - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/gtb.zonenet/peers/peer0.gtb.zonenet/tls/server.crt
+       - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/gtb.zonenet/peers/peer0.gtb.zonenet/tls/server.key
+       - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/gtb.zonenet/peers/peer0.gtb.zonenet/tls/ca.crt
+       - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/gtb.zonenet/users/Admin@gtb.zonenet/msp
+     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+     command: /bin/bash
+     volumes:
+        - /var/run/:/host/var/run/
+        - ./../chaincode/:/opt/gopath/src/github.com/chaincode
+        - ./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
+        - ./scripts:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/
+        - ./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
+     depends_on:
+       - orderer.zonenet
+       - peer0.gtb.zonenet
+       - peer1.gtb.zonenet
+       - peer0.uba.zonenet
+       - peer1.uba.zonenet
+     networks:
+       - byfn
+
