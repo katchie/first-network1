@@ -7,7 +7,7 @@
 
 # This script is designed to be run in the cli container as the third
 # step of the EYFN tutorial. It installs the chaincode as version 2.0
-# on peer0.gtb and peer0.uba, and uprage the chaincode on the
+# on peer0.org1 and peer0.org2, and uprage the chaincode on the
 # channel to version 2.0, thus completing the addition of org3 to the
 # network previously setup in the BYFN tutorial.
 #
@@ -26,7 +26,7 @@ TIMEOUT="$4"
 LANGUAGE=`echo "$LANGUAGE" | tr [:upper:] [:lower:]`
 COUNTER=1
 MAX_RETRY=5
-ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/zonenet/orderers/orderer.zonenet/msp/tlscacerts/tlsca.zonenet-cert.pem
+ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
 
 CC_SRC_PATH="github.com/chaincode/chaincode_example02/go/"
 if [ "$LANGUAGE" = "node" ]; then
@@ -36,12 +36,12 @@ fi
 # import utils
 . scripts/utils.sh
 
-echo "===================== Installing chaincode 2.0 on peer0.gtb ===================== "
+echo "===================== Installing chaincode 2.0 on peer0.org1 ===================== "
 installChaincode 0 1 2.0
-echo "===================== Installing chaincode 2.0 on peer0.uba ===================== "
+echo "===================== Installing chaincode 2.0 on peer0.org2 ===================== "
 installChaincode 0 2 2.0
 
-echo "===================== Upgrading chaincode on peer0.gtb ===================== "
+echo "===================== Upgrading chaincode on peer0.org1 ===================== "
 upgradeChaincode 0 1
 
 echo

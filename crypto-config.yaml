@@ -11,7 +11,7 @@ OrdererOrgs:
   # Orderer
   # ---------------------------------------------------------------------------
   - Name: Orderer
-    Domain: zonenet
+    Domain: example.com
     # ---------------------------------------------------------------------------
     # "Specs" - See PeerOrgs below for complete description
     # ---------------------------------------------------------------------------
@@ -22,10 +22,10 @@ OrdererOrgs:
 # ---------------------------------------------------------------------------
 PeerOrgs:
   # ---------------------------------------------------------------------------
-  # gtb
+  # Org1
   # ---------------------------------------------------------------------------
-  - Name: gtb
-    Domain: gtb.zonenet
+  - Name: Org1
+    Domain: org1.example.com
     EnableNodeOUs: true
     # ---------------------------------------------------------------------------
     # "Specs"
@@ -44,8 +44,8 @@ PeerOrgs:
     #                 Org.Domain, respectively.
     # ---------------------------------------------------------------------------
     # Specs:
-    #   - Hostname: foo # implicitly "foo.gtb.zonenet"
-    #     CommonName: foo27.org5.zonenet # overrides Hostname-based FQDN set above
+    #   - Hostname: foo # implicitly "foo.org1.example.com"
+    #     CommonName: foo27.org5.example.com # overrides Hostname-based FQDN set above
     #   - Hostname: bar
     #   - Hostname: baz
     # ---------------------------------------------------------------------------
@@ -72,10 +72,10 @@ PeerOrgs:
     Users:
       Count: 1
   # ---------------------------------------------------------------------------
-  # uba: See "gtb" for full specification
+  # Org2: See "Org1" for full specification
   # ---------------------------------------------------------------------------
-  - Name: uba
-    Domain: uba.zonenet
+  - Name: Org2
+    Domain: org2.example.com
     EnableNodeOUs: true
     Template:
       Count: 2

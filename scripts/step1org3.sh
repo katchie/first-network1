@@ -22,7 +22,7 @@ TIMEOUT="$4"
 LANGUAGE=`echo "$LANGUAGE" | tr [:upper:] [:lower:]`
 COUNTER=1
 MAX_RETRY=5
-ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/zonenet/orderers/orderer.zonenet/msp/tlscacerts/tlsca.zonenet-cert.pem
+ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
 
 CC_SRC_PATH="github.com/chaincode/chaincode_example02/go/"
 if [ "$LANGUAGE" = "node" ]; then
@@ -59,11 +59,11 @@ echo
 signConfigtxAsPeerOrg 1 org3_update_in_envelope.pb
 
 echo
-echo "========= Submitting transaction from a different peer (peer0.uba) which also signs it ========= "
+echo "========= Submitting transaction from a different peer (peer0.org2) which also signs it ========= "
 echo
 setGlobals 0 2
 set -x
-peer channel update -f org3_update_in_envelope.pb -c ${CHANNEL_NAME} -o orderer.zonenet:7050 --tls --cafile ${ORDERER_CA}
+peer channel update -f org3_update_in_envelope.pb -c ${CHANNEL_NAME} -o orderer.example.com:7050 --tls --cafile ${ORDERER_CA}
 set +x
 
 echo

@@ -26,15 +26,15 @@ Profiles:
         Consortiums:
             SampleConsortium:
                 Organizations:
-                    - *gtb
-                    - *uba
+                    - *Org1
+                    - *Org2
     TwoOrgsChannel:
         Consortium: SampleConsortium
         Application:
             <<: *ApplicationDefaults
             Organizations:
-                - *gtb
-                - *uba
+                - *Org1
+                - *Org2
             Capabilities:
                 <<: *ApplicationCapabilities
 
@@ -59,40 +59,40 @@ Organizations:
         ID: OrdererMSP
 
         # MSPDir is the filesystem path which contains the MSP configuration
-        MSPDir: crypto-config/ordererOrganizations/zonenet/msp
+        MSPDir: crypto-config/ordererOrganizations/example.com/msp
 
-    - &gtb
+    - &Org1
         # DefaultOrg defines the organization which is used in the sampleconfig
         # of the fabric.git development environment
-        Name: gtbMSP
+        Name: Org1MSP
 
         # ID to load the MSP definition as
-        ID: gtbMSP
+        ID: Org1MSP
 
-        MSPDir: crypto-config/peerOrganizations/gtb.zonenet/msp
+        MSPDir: crypto-config/peerOrganizations/org1.example.com/msp
 
         AnchorPeers:
             # AnchorPeers defines the location of peers which can be used
             # for cross org gossip communication.  Note, this value is only
             # encoded in the genesis block in the Application section context
-            - Host: peer0.gtb.zonenet
+            - Host: peer0.org1.example.com
               Port: 7051
 
-    - &uba
+    - &Org2
         # DefaultOrg defines the organization which is used in the sampleconfig
         # of the fabric.git development environment
-        Name: ubaMSP
+        Name: Org2MSP
 
         # ID to load the MSP definition as
-        ID: ubaMSP
+        ID: Org2MSP
 
-        MSPDir: crypto-config/peerOrganizations/uba.zonenet/msp
+        MSPDir: crypto-config/peerOrganizations/org2.example.com/msp
 
         AnchorPeers:
             # AnchorPeers defines the location of peers which can be used
             # for cross org gossip communication.  Note, this value is only
             # encoded in the genesis block in the Application section context
-            - Host: peer0.uba.zonenet
+            - Host: peer0.org2.example.com
               Port: 7051
 
 ################################################################################
@@ -110,7 +110,7 @@ Orderer: &OrdererDefaults
     OrdererType: solo
 
     Addresses:
-        - orderer.zonenet:7050
+        - orderer.example.com:7050
 
     # Batch Timeout: The amount of time to wait before creating a batch
     BatchTimeout: 2s

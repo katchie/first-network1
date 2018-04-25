@@ -20,7 +20,7 @@ TIMEOUT="$4"
 LANGUAGE=`echo "$LANGUAGE" | tr [:upper:] [:lower:]`
 COUNTER=1
 MAX_RETRY=5
-ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/zonenet/orderers/orderer.zonenet/msp/tlscacerts/tlsca.zonenet-cert.pem
+ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
 
 CC_SRC_PATH="github.com/chaincode/chaincode_example02/go/"
 if [ "$LANGUAGE" = "node" ]; then
@@ -37,12 +37,12 @@ createChannel() {
 
 	if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
                 set -x
-		peer channel create -o orderer.zonenet:7050 -c $CHANNEL_NAME -f ./channel-artifacts/channel.tx >&log.txt
+		peer channel create -o orderer.example.com:7050 -c $CHANNEL_NAME -f ./channel-artifacts/channel.tx >&log.txt
 		res=$?
                 set +x
 	else
 				set -x
-		peer channel create -o orderer.zonenet:7050 -c $CHANNEL_NAME -f ./channel-artifacts/channel.tx --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA >&log.txt
+		peer channel create -o orderer.example.com:7050 -c $CHANNEL_NAME -f ./channel-artifacts/channel.tx --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA >&log.txt
 		res=$?
 				set +x
 	fi
@@ -72,35 +72,35 @@ echo "Having all peers join the channel..."
 joinChannel
 
 ## Set the anchor peers for each org in the channel
-echo "Updating anchor peers for gtb..."
+echo "Updating anchor peers for org1..."
 updateAnchorPeers 0 1
-echo "Updating anchor peers for uba..."
+echo "Updating anchor peers for org2..."
 updateAnchorPeers 0 2
 
-## Install chaincode on peer0.gtb and peer0.uba
-echo "Installing chaincode on peer0.gtb..."
+## Install chaincode on peer0.org1 and peer0.org2
+echo "Installing chaincode on peer0.org1..."
 installChaincode 0 1
-echo "Install chaincode on peer0.uba..."
+echo "Install chaincode on peer0.org2..."
 installChaincode 0 2
 
-# Instantiate chaincode on peer0.uba
-echo "Instantiating chaincode on peer0.uba..."
+# Instantiate chaincode on peer0.org2
+echo "Instantiating chaincode on peer0.org2..."
 instantiateChaincode 0 2
 
-# Query chaincode on peer0.gtb
-echo "Querying chaincode on peer0.gtb..."
+# Query chaincode on peer0.org1
+echo "Querying chaincode on peer0.org1..."
 chaincodeQuery 0 1 100
 
-# Invoke chaincode on peer0.gtb
-echo "Sending invoke transaction on peer0.gtb..."
+# Invoke chaincode on peer0.org1
+echo "Sending invoke transaction on peer0.org1..."
 chaincodeInvoke 0 1
 
-## Install chaincode on peer1.uba
-echo "Installing chaincode on peer1.uba..."
+## Install chaincode on peer1.org2
+echo "Installing chaincode on peer1.org2..."
 installChaincode 1 2
 
-# Query on chaincode on peer1.uba, check if the result is 90
-echo "Querying chaincode on peer1.uba..."
+# Query on chaincode on peer1.org2, check if the result is 90
+echo "Querying chaincode on peer1.org2..."
 chaincodeQuery 1 2 90
 
 echo
