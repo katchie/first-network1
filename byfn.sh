@@ -174,7 +174,7 @@ function networkUp () {
 # Stop the orderer and peers, backup the ledger from orderer and peers, cleanup chaincode containers and images
 # and relaunch the orderer and peers with latest tag
 function upgradeNetwork () {
-  docker inspect  -f '{{.Config.Volumes}}' orderer.example.com |grep -q '/var/hyperledger/production/orderer'
+  docker inspect  -f '{{.Config.Volumes}}' orderer.zonenet |grep -q '/var/hyperledger/production/orderer'
   if [ $? -ne 0 ]; then
     echo "ERROR !!!! This network does not appear to be using volumes for its ledgers, did you start from fabric-samples >= v1.0.6?"
     exit 1
@@ -197,11 +197,11 @@ function upgradeNetwork () {
   docker-compose $COMPOSE_FILES up -d --no-deps cli
 
   echo "Upgrading orderer"
-  docker-compose $COMPOSE_FILES stop orderer.example.com
-  docker cp -a orderer.example.com:/var/hyperledger/production/orderer $LEDGERS_BACKUP/orderer.example.com
-  docker-compose $COMPOSE_FILES up -d --no-deps orderer.example.com
+  docker-compose $COMPOSE_FILES stop orderer.zonenet
+  docker cp -a orderer.zonenet:/var/hyperledger/production/orderer $LEDGERS_BACKUP/orderer.zonenet
+  docker-compose $COMPOSE_FILES up -d --no-deps orderer.zonenet
 
-  for PEER in peer0.org1.example.com peer1.org1.example.com peer0.org2.example.com peer1.org2.example.com; do
+  for PEER in peer0.gtb.zonenet peer1.gtb.zonenet peer0.uba.zonenet peer1.uba.zonenet; do
     echo "Upgrading peer $PEER"
 
     # Stop the peer and backup its ledger
@@ -269,11 +269,11 @@ function replacePrivateKey () {
   # The next steps will replace the template's contents with the
   # actual values of the private key file names for the two CAs.
   CURRENT_DIR=$PWD
-  cd crypto-config/peerOrganizations/org1.example.com/ca/
+  cd crypto-config/peerOrganizations/gtb.zonenet/ca/
   PRIV_KEY=$(ls *_sk)
   cd "$CURRENT_DIR"
   sed $OPTS "s/CA1_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-e2e.yaml
-  cd crypto-config/peerOrganizations/org2.example.com/ca/
+  cd crypto-config/peerOrganizations/uba.zonenet/ca/
   PRIV_KEY=$(ls *_sk)
   cd "$CURRENT_DIR"
   sed $OPTS "s/CA2_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-e2e.yaml
@@ -337,7 +337,7 @@ function generateCerts (){
 #
 # Configtxgen consumes a file - ``configtx.yaml`` - that contains the definitions
 # for the sample network. There are three members - one Orderer Org (``OrdererOrg``)
-# and two Peer Orgs (``Org1`` & ``Org2``) each managing and maintaining two peer nodes.
+# and two Peer Orgs (``gtb`` & ``uba``) each managing and maintaining two peer nodes.
 # This file also specifies a consortium - ``SampleConsortium`` - consisting of our
 # two Peer Orgs.  Pay specific attention to the "Profiles" section at the top of
 # this file.  You will notice that we have two unique headers. One for the orderer genesis
@@ -345,7 +345,7 @@ function generateCerts (){
 # These headers are important, as we will pass them in as arguments when we create
 # our artifacts.  This file also contains two additional specifications that are worth
 # noting.  Firstly, we specify the anchor peers for each Peer Org
-# (``peer0.org1.example.com`` & ``peer0.org2.example.com``).  Secondly, we point to
+# (``peer0.gtb.zonenet`` & ``peer0.uba.zonenet``).  Secondly, we point to
 # the location of the MSP directory for each member, in turn allowing us to store the
 # root certificates for each Org in the orderer genesis block.  This is a critical
 # concept. Now any network entity communicating with the ordering service can have
