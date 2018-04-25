@@ -28,7 +28,7 @@ setGlobals () {
 	PEER=$1
 	ORG=$2
 	if [ $ORG -eq 1 ] ; then
-		CORE_PEER_LOCALMSPID="Org1MSP"
+		CORE_PEER_LOCALMSPID="gtbMSP"
 		CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/gtb.zonenet/peers/peer0.gtb.zonenet/tls/ca.crt
 		CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/gtb.zonenet/users/Admin@gtb.zonenet/msp
 		if [ $PEER -eq 0 ]; then
@@ -37,7 +37,7 @@ setGlobals () {
 			CORE_PEER_ADDRESS=peer1.gtb.zonenet:7051
 		fi
 	elif [ $ORG -eq 2 ] ; then
-		CORE_PEER_LOCALMSPID="Org2MSP"
+		CORE_PEER_LOCALMSPID="ubaMSP"
 		CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/uba.zonenet/peers/peer0.uba.zonenet/tls/ca.crt
 		CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/uba.zonenet/users/Admin@uba.zonenet/msp
 		if [ $PEER -eq 0 ]; then
@@ -133,12 +133,12 @@ instantiateChaincode () {
 	# lets supply it directly as we know it using the "-o" option
 	if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
                 set -x
-		peer chaincode instantiate -o orderer.zonenet:7050 -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v ${VERSION} -c '{"Args":["init","a","100","b","200"]}' -P "OR	('Org1MSP.peer','Org2MSP.peer')" >&log.txt
+		peer chaincode instantiate -o orderer.zonenet:7050 -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v ${VERSION} -c '{"Args":["init","a","100","b","200"]}' -P "OR	('gtbMSP.peer','ubaMSP.peer')" >&log.txt
 		res=$?
                 set +x
 	else
                 set -x
-		peer chaincode instantiate -o orderer.zonenet:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v 1.0 -c '{"Args":["init","a","100","b","200"]}' -P "OR	('Org1MSP.peer','Org2MSP.peer')" >&log.txt
+		peer chaincode instantiate -o orderer.zonenet:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v 1.0 -c '{"Args":["init","a","100","b","200"]}' -P "OR	('gtbMSP.peer','ubaMSP.peer')" >&log.txt
 		res=$?
                 set +x
 	fi
@@ -154,7 +154,7 @@ upgradeChaincode () {
     setGlobals $PEER $ORG
 
     set -x
-    peer chaincode upgrade -o orderer.zonenet:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -v 2.0 -c '{"Args":["init","a","90","b","210"]}' -P "OR ('Org1MSP.peer','Org2MSP.peer','Org3MSP.peer')"
+    peer chaincode upgrade -o orderer.zonenet:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -v 2.0 -c '{"Args":["init","a","90","b","210"]}' -P "OR ('gtbMSP.peer','ubaMSP.peer','Org3MSP.peer')"
     res=$?
 	set +x
     cat log.txt

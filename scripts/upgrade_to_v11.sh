@@ -65,17 +65,17 @@ addCapabilityToChannel() {
                       setOrdererGlobals
                 elif [ $GROUP == "channel" ]; then
                       # Modifying the channel group requires a majority of application admins and the orderer admin to sign.
-                      # Sign with PeerOrg1.Admin
+                      # Sign with Peergtb.Admin
                       signConfigtxAsPeerOrg 1 config_update_in_envelope.pb
-                      # Sign with PeerOrg2.Admin
+                      # Sign with Peeruba.Admin
                       signConfigtxAsPeerOrg 2 config_update_in_envelope.pb
                       # Prepare to sign the update as the OrdererOrg.Admin
                       setOrdererGlobals
                 elif [ $GROUP == "application" ]; then
                       # Modifying the application group requires a majority of application admins to sign.
-                      # Sign with PeerOrg1.Admin
+                      # Sign with Peergtb.Admin
                       signConfigtxAsPeerOrg 1 config_update_in_envelope.pb
-                      # Prepare to sign the update as the PeerOrg2.Admin
+                      # Prepare to sign the update as the Peeruba.Admin
                       setGlobals 0 2
                 fi
         else

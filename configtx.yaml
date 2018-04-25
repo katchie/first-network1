@@ -64,10 +64,10 @@ Organizations:
     - &gtb
         # DefaultOrg defines the organization which is used in the sampleconfig
         # of the fabric.git development environment
-        Name: Org1MSP
+        Name: gtbMSP
 
         # ID to load the MSP definition as
-        ID: Org1MSP
+        ID: gtbMSP
 
         MSPDir: crypto-config/peerOrganizations/gtb.zonenet/msp
 
@@ -81,10 +81,10 @@ Organizations:
     - &uba
         # DefaultOrg defines the organization which is used in the sampleconfig
         # of the fabric.git development environment
-        Name: Org2MSP
+        Name: ubaMSP
 
         # ID to load the MSP definition as
-        ID: Org2MSP
+        ID: ubaMSP
 
         MSPDir: crypto-config/peerOrganizations/uba.zonenet/msp
 

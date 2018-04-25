@@ -42,7 +42,7 @@ services:
       - CORE_PEER_ADDRESS=peer0.gtb.zonenet:7051
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.gtb.zonenet:7051
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.gtb.zonenet:7051
-      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_PEER_LOCALMSPID=gtbMSP
     volumes:
         - /var/run/:/host/var/run/
         - ../crypto-config/peerOrganizations/gtb.zonenet/peers/peer0.gtb.zonenet/msp:/etc/hyperledger/fabric/msp
@@ -62,7 +62,7 @@ services:
       - CORE_PEER_ADDRESS=peer1.gtb.zonenet:7051
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.gtb.zonenet:7051
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.gtb.zonenet:7051
-      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_PEER_LOCALMSPID=gtbMSP
     volumes:
         - /var/run/:/host/var/run/
         - ../crypto-config/peerOrganizations/gtb.zonenet/peers/peer1.gtb.zonenet/msp:/etc/hyperledger/fabric/msp
@@ -83,7 +83,7 @@ services:
       - CORE_PEER_ADDRESS=peer0.uba.zonenet:7051
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.uba.zonenet:7051
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.uba.zonenet:7051
-      - CORE_PEER_LOCALMSPID=Org2MSP
+      - CORE_PEER_LOCALMSPID=ubaMSP
     volumes:
         - /var/run/:/host/var/run/
         - ../crypto-config/peerOrganizations/uba.zonenet/peers/peer0.uba.zonenet/msp:/etc/hyperledger/fabric/msp
@@ -103,7 +103,7 @@ services:
       - CORE_PEER_ADDRESS=peer1.uba.zonenet:7051
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.uba.zonenet:7051
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.uba.zonenet:7051
-      - CORE_PEER_LOCALMSPID=Org2MSP
+      - CORE_PEER_LOCALMSPID=ubaMSP
     volumes:
         - /var/run/:/host/var/run/
         - ../crypto-config/peerOrganizations/uba.zonenet/peers/peer1.uba.zonenet/msp:/etc/hyperledger/fabric/msp
